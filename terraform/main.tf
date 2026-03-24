@@ -111,3 +111,26 @@ resource "azurerm_linux_virtual_machine" "virtual_machine" {
 
   tags = local.common_tags
 }
+
+resource "azurerm_mssql_server" "sql_server" {
+  name                         = "${local.name_prefix}-sqlserver"
+  location                     = local.region
+  resource_group_name          = azurerm_resource_group.resource_group.name
+  version                      = local.sql_module.version
+  administrator_login          = local.sql_module.administrator_login
+  administrator_login_password = local.sql_module.administrator_login_password
+
+  tags = local.common_tags
+}
+
+resource "azurerm_mssql_database" "sql_database" {
+  name         = "${local.name_prefix}-sqldb"
+  server_id    = azurerm_mssql_server.sql_server.id
+  collation    = local.sql_module.collation
+  license_type = local.sql_module.license_type
+  max_size_gb  = local.sql_module.max_size_gb
+  sku_name     = local.sql_module.sku_name
+  enclave_type = local.sql_module.enclave_type
+
+  tags = local.common_tags
+}

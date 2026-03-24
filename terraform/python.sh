@@ -3,11 +3,20 @@
 # Redirect logs
 exec > /var/log/python-bootstrap.log 2>&1
 
-echo "Starting python setup"
+echo "Starting Python & FastAPI setup"
 
-# Install Python & pip
+# Update system
 apt-get update -y
-apt-get install -y python3 python3-pip curl gnupg2 unixodbc unixodbc-dev
+
+# Install base dependencies
+apt-get install -y \
+    python3 \
+    python3-pip \
+    curl \
+    gnupg2 \
+    unixodbc \
+    unixodbc-dev \
+    git
 
 # Install Microsoft ODBC Driver
 curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft.gpg
@@ -18,9 +27,31 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packa
 apt-get update -y
 ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
-# Install Python dependencies
+# Upgrade pip
 pip3 install --upgrade pip
-pip3 install -r requirements.txt
+
+# Install Python packages directly
+pip3 install \
+    pyodbc \
+    fastapi \
+    "uvicorn[standard]" \
+    pydantic \
+    azure-identity \
+    python-dotenv
+
+# Create app directory
+mkdir -p /opt/app
+
+# Create sample app (remove if you already copy your own app)
+cat <<EOF > /opt/app/app.py
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def health():
+    return {"status": "FastAPI running"}
+EOF
 
 # Create Uvicorn systemd service
 echo "Creating uvicorn service..."
@@ -40,10 +71,10 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-# Enable & start service
+# Enable & Start Service
 systemctl daemon-reexec
 systemctl daemon-reload
 systemctl enable uvicorn
 systemctl start uvicorn
 
-echo "Python setup completed"
+echo "Python FastAPI setup completed"
