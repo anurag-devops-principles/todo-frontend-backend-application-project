@@ -28,6 +28,10 @@ jobs:
         with:
           tflint_version: latest
 
+      - name: Tflint Init
+        run: tflint --init
+        working-directory: ${{ env.working-directory }}
+
       - name: Tflint Scan
         id: tflint
         run: tflint --chdir=${{ env.working-directory }}
