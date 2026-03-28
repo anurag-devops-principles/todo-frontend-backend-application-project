@@ -117,3 +117,7 @@ The project includes Azure Pipeline configurations for automated deployment:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Author
+
+**Author**: Anurag Vijay
