@@ -28,14 +28,12 @@ jobs:
         with:
           tflint_version: latest
 
-      - name: Tflint Init
-        run: tflint --chdir=${{ env.working-directory }} --init
-        working-directory: ${{ env.working-directory }}
-
       - name: Tflint Scan
-        id: tflint
-        run: tflint --chdir=${{ env.working-directory }}
-        continue-on-error: true
+        run: |
+          tflint --version
+          tflint init
+          tflint
+        working-directory: ${{ env.working-directory }}
 
       - name: Tfsec Scan
         uses: aquasecurity/tfsec-action@v1.0.0
