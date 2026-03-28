@@ -33,12 +33,23 @@ jobs:
         run: |
           tflint --version
           tflint --chdir=${{ env.working-directory }} --init
-          tflint --chdir=${{ env.working-directory }} -f compact
+          tflint --chdir=${{ env.working-directory }}
 
       - name: Tfsec Scan
+        id: tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: ${{ env.working-directory }}
           version: latest
           additional_args: --tfvars-file=${{ env.working-directory }}/terraform.tfvars
+          soft_fail: true
+
+      - name: Checkov Scan
+        id: checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ${{ env.working-directory }}
+          framework: terraform
+          var_file: terraform.tfvars
+          output_format: cli
           soft_fail: true
