@@ -32,7 +32,7 @@ jobs:
         id: tflint
         run: |
           tflint --version
-          tflint --chdir=${{ env.working-directory }} init
+          tflint --chdir=${{ env.working-directory }} --init
           tflint --chdir=${{ env.working-directory }}
 
       - name: Tfsec Scan
