@@ -30,8 +30,9 @@ jobs:
 
       - name: Tflint Scan
         id: tflint
-        run: tflint init && tflint
-        working-directory: ${{ env.working-directory }}
+        run: |
+          tflint --chdir=${{ env.working-directory }} --init
+          tflint --chdir=${{ env.working-directory }}
         continue-on-error: true
 
       - name: Tfsec Scan
