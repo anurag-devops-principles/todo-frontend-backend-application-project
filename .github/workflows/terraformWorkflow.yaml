@@ -1,0 +1,36 @@
+name: terraform || azure-resources || deployment
+
+run-name: run-by user-${{ github.actor }} from branch-${{ github.ref_name }} with run-id-${{ github.run_id }} with workflow#${{ github.run_number }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: 
+      - main
+  workflow_dispatch:
+
+env:
+  working-directory: ./terraform
+
+jobs:
+  terraform-lint-security:
+    name: Terraform Lint and Security
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Super-linter Scan
+        uses: super-linter/super-linter@v8.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_WORKSPACE: ${{ env.working-directory }}
+          VALIDATE_TERRAFORM_FMT : true
+          VALIDATE_TERRAFORM_TFLINT: true
+          VALIDATE_CHECKOV: true
+          VALIDATE_TRIVY: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_BASH: true
