@@ -27,17 +27,14 @@ locals {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
     publisher            = "Cannonical"
-
     offer = {
       fe-vm = "0001-com-ubuntu-server-jammy"
       be-vm = "0001-com-ubuntu-server-focal"
     }
-
     sku = {
       fe-vm = "22_04-LTS"
       be-vm = "20_04-LTS"
     }
-
     version = "latest"
   }
 
@@ -50,6 +47,8 @@ locals {
     max_size_gb                  = 5
     sku_name                     = "S0"
     enclave_type                 = "VBS"
+    start_ip_address             = "192.168.100.128"
+    end_ip_address               = "192.168.100.191"
   }
 }
 

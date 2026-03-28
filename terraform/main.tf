@@ -134,3 +134,10 @@ resource "azurerm_mssql_database" "sql_database" {
 
   tags = local.common_tags
 }
+
+resource "azurerm_mssql_firewall_rule" "backend_firewall" {
+  name             = "${local.name_prefix}-sql-fw-rule"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = local.sql_module.start_ip_address
+  end_ip_address   = local.sql_module.end_ip_address
+}
