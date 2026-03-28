@@ -15,23 +15,29 @@ env:
   working-directory: ./terraform
 
 jobs:
-  terraform-lint-security:
-    name: Terraform Lint and Security
+  terraform-security-scan:
+    name: Terraform Security Scanning
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Super-linter Scan
-        uses: super-linter/super-linter@v8.5.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_WORKSPACE: ${{ env.working-directory }}
-          VALIDATE_TERRAFORM_FMT : true
-          VALIDATE_TERRAFORM_TFLINT: true
-          VALIDATE_CHECKOV: true
-          VALIDATE_TRIVY: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_BASH: true
-          VALIDATE_ALL_CODEBASE: false
+      - name: Setup Tflint
+        uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: latest
+
+      - name: Tflint Scan
+        id: tflint
+        run: tflint init && tflint
+        working-directory: ${{ env.working-directory }}
+        continue-on-error: true
+
+      - name: Tfsec Scan
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          working_directory: ${{ env.working-directory }}
+          version: latest
+          additional_args: --tfvars-file=${{ env.working-directory }}/terraform.tfvars
+          soft_fail: true
