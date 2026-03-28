@@ -34,3 +34,4 @@ jobs:
           VALIDATE_TRIVY: true
           VALIDATE_MARKDOWN: true
           VALIDATE_BASH: true
+          VALIDATE_ALL_CODEBASE: false
