@@ -1,0 +1,38 @@
+name: terraform || azure-reasources || destroy
+
+run-name: run-by user-${{ github.actor }} from branch-${{ github.ref_name }} with run-id-${{ github.run_id }} with workflow#${{ github.run_number }}
+
+on:
+  workflow_dispatch:
+
+env:
+  working-directory: ./terraform
+
+jobs:
+  terraform-destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: latest
+
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDNTIALS }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Destroy
+        id: destroy
+        run: terraform destroy
+        working-directory: ${{ env.working-directory }}
