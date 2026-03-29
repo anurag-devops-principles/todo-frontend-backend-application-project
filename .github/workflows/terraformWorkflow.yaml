@@ -71,7 +71,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terrafom init -input=false
+        run: terraform init -input=false
         working-directory: ${{ env.working-directory }}
 
       - name: Terraform Fmt
