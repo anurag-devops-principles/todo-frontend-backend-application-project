@@ -26,7 +26,7 @@ locals {
     }
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
-    publisher            = "Cannonical"
+    publisher            = "Canonical"
     offer = {
       fe-vm = "0001-com-ubuntu-server-jammy"
       be-vm = "0001-com-ubuntu-server-focal"
@@ -41,7 +41,7 @@ locals {
   sql_module = {
     version                      = "12.0"
     administrator_login          = "sqladmin"
-    administrator_login_password = "Sqladmin@1234"
+    administrator_login_password = "Sql@123admin@987"
     collation                    = "SQL_Latin1_General_CP1_CI_AS"
     license_type                 = "LicenseIncluded"
     max_size_gb                  = 5
