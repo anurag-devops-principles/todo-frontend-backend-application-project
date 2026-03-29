@@ -56,7 +56,7 @@ jobs:
 
       - name: Super-Linter Scan
         id: superlinter
-        uses: uper-linter/super-linter@v8.5.0
+        uses: super-linter/super-linter@v8.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_WORKSPACE: ${{ env.working-directory }}
