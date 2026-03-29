@@ -32,7 +32,11 @@ jobs:
         run: terraform init -input=false
         working-directory: ${{ env.working-directory }}
 
-      - name: Terraform Destroy
-        id: destroy
-        run: terraform destroy
+      - name: Terraform Destroy Plan  
+        id: destroy-plan
+        run: terraform plan -destroy -out=destroy.tfplan
         working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Destroy Apply
+        id: destroy-apply
+        run: terraform apply -auto-approve destroy.tfplan
