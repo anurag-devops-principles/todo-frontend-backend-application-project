@@ -53,3 +53,14 @@ jobs:
           var_file: terraform.tfvars
           output_format: cli
           soft_fail: true
+
+      - name: Super-Linter Scan
+        id: superlinter
+        uses: uper-linter/super-linter@v8.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_WORKSPACE: ${{ env.working-directory }}
+          VALDIATE_ALL_CODEBASE: false
+          VALIDATE_TERRAFORM_FMT: true
+          VALIDATE_TERRAFORM_TFLINT: true
+          VALIDATE_CHECKOV: true
