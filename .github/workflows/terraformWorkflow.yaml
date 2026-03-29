@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -56,13 +56,92 @@ jobs:
           output_format: cli
           soft_fail: true
 
-      - name: Super-Linter Scan
-        id: superlinter
-        uses: super-linter/super-linter@v8.5.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_WORKSPACE: ${{ env.working-directory }}
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_TERRAFORM_FMT: true
-          VALIDATE_TERRAFORM_TFLINT: true
-          VALIDATE_CHECKOV: true
+  terraform-fmt-validate:
+    name: Terraform Fmt and Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        id: init
+        run: terrafom init -input=false
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Fmt
+        id: fmt
+        run: terraform fmt -check -recursive
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.working-directory }}
+
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs:
+      - terraform-security-scan
+      - terraform-fmt-validate
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan
+        working-directory: ${{ env.working-directory }}
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: ${{ env.working-directory }}/tfplan
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: latest
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v8
+        with:
+          name: terraform-plan
+          path: ${{ env.working-directory }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply tfplan
+        working-directory: ${{ env.working-directory }}
