@@ -69,6 +69,11 @@ jobs:
         with:
           terraform_version: latest
 
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Terraform Init
         id: init
         run: terraform init -input=false
@@ -99,6 +104,11 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: latest
+
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Init
         id: init
@@ -135,6 +145,11 @@ jobs:
         with:
           name: terraform-plan
           path: ${{ env.working-directory }}
+
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Init
         id: init
