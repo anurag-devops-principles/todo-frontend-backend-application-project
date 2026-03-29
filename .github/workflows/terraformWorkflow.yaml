@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Tflint
         uses: terraform-linters/setup-tflint@v6
@@ -60,7 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_WORKSPACE: ${{ env.working-directory }}
-          VALDIATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_TERRAFORM_FMT: true
           VALIDATE_TERRAFORM_TFLINT: true
           VALIDATE_CHECKOV: true
